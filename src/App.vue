@@ -1,13 +1,14 @@
 //app.vue
 <template>
-  <div>
-    <header>
+  <div id="app">
+    <header class="kanban-header">
       <h1>Kanban Board</h1>
-    </header>
-    <div>
+      <div class="bouton-titre">
       <button @click="addColumn">Ajouter une colonne</button>
       <button @click="addTask">Ajouter une tâche</button>
     </div>
+    </header>
+    
     <div class="kanban-columns">
       <div v-for="(column, columnIndex) in columns" :key="column.id" class="kanban-column">
         <Column :column="column" :columnIndex="columnIndex" />
@@ -61,6 +62,32 @@ onMounted(() => {
 </script>
 
 <style scoped>
+#app {
+  width: 100%;
+  min-width: 70vw;
+}
+
+.kanban-header {
+  background-color: #3498db;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  
+
+}
+.bouton-titre{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 2%;
+}
+.kanban-header h1 {
+  margin: 0;
+  color: #fff;
+}
+
 .kanban-columns {
   display: flex;
   height: 100vh;
