@@ -40,7 +40,7 @@ Lancez l'application en mode développement avec la commande suivante.
 bash
 Copy code
 npm run serve
-Accédez à http://localhost:8080 dans votre navigateur pour voir le tableau Kanban en action.
+
 
 Conclusion
 Ce projet fournit une solution pratique et fonctionnelle pour la gestion de projets à l'aide d'un tableau Kanban, en mettant en évidence les avantages de Vue.js dans le contexte du développement frontend.
