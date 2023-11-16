@@ -1,100 +1,68 @@
-<script setup>
-import TaskModal from "./components/TaskModal.vue";
-import Baselayout from "./components/BaseLayout.vue";
-
-const data = {
-  creationModalVisible: false,
-  finiModalVisible: false,
-};
-
-const methods = {
-  openCreationModal() {
-    data.creationModalVisible = true;
-  },
-  closeCreationModal() {
-    data.creationModalVisible = false;
-  },
-  openFiniModal() {
-    data.finiModalVisible = true;
-  },
-  closeFiniModal() {
-    data.finiModalVisible = false;
-  },
-};
-</script>
+//app.vue
 <template>
-  <Baselayout>
-    <div class="container">
-      <header>
-        <nav>
-          <a href="#" @click.prevent="openCreationModal">Création de tâches</a>
-          <p>La todo List</p>
-          <a href="#" @click.prevent="openFiniModal">Tâche fini</a>
-        </nav>
-      </header>
-      <main>
-        <router-view></router-view>
-      </main>
-      <footer>
-        <slot name="footer"></slot>
-      </footer>
-      <TaskModal v-if="creationModalVisible" @close="closeCreationModal">
-        Création de tâches modal content
-      </TaskModal>
-      <TaskModal v-if="finiModalVisible" @close="closeFiniModal">
-        Tâche fini modal content
-      </TaskModal>
+  <div>
+    <header>
+      <h1>Kanban Board</h1>
+    </header>
+    <div>
+      <button @click="addColumn">Ajouter une colonne</button>
+      <button @click="addTask">Ajouter une tâche</button>
     </div>
-  </Baselayout>
+    <div class="kanban-columns">
+      <div v-for="(column, columnIndex) in columns" :key="column.id" class="kanban-column">
+        <Column :column="column" :columnIndex="columnIndex" />
+        <button @click="removeColumn(columnIndex)">Supprimer</button>
+      </div>
+    </div>
+  </div>
 </template>
 
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useStore } from 'vuex';
+import Column from './components/Column.vue';
+
+const store = useStore();
+const columns = ref(store.state.columns);
+
+const addColumn = () => {
+  const newColumn = {
+    id: columns.value.length + 1,
+    name: 'Nouvelle colonne',
+    tasks: [],
+  };
+  store.commit('addColumn', newColumn);
+};
+
+const addTask = () => {
+  if (columns.value.length > 0) {
+    const columnIndex = 0; // ou ajustez cela en conséquence
+    const newTask = {
+      id: Date.now(),
+      name: 'Nouvelle tâche',
+      description: '',
+    };
+
+    store.commit('addTask', { columnIndex, newTask });
+  }
+};
+
+
+const removeColumn = (columnIndex) => {
+  store.commit('removeColumn', columnIndex);
+};
+const renderCount = ref(0);
+
+onMounted(() => {
+  // Update columns when the store state changes
+  columns.value = store.state.columns;
+  renderCount.value += 1;
+});
+</script>
+
 <style scoped>
-.container {
+.kanban-columns {
   display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background-color: #ffffff;
-  border-bottom: 1px solid #ccc;
-  color: #a70e0e;
-  font-size: 3em;
-  width: 100%;
-}
-
-nav {
-  display: flex;
-  justify-content: space-around;
-  padding: 10px;
-  align-items: center;
-}
-
-nav a {
-  text-decoration: none;
-  color: #a70e0e;
-  font-weight: bold;
-  
-}
-
-main {
-  flex: 1;
-  padding-top: 60px;
-}
-
-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #ffffff;
-  border-top: 1px solid #ccc;
-  color: #666;
-  font-size: 0.8em;
-  width: 100%;
+  height: 100vh;
 }
 </style>
